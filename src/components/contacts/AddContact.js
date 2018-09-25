@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
 import TextInputGroup from '../layout/TextInputGroup';
+import { connect } from 'react-redux';
+import { addContact } from '../../actions/contactActions';
 
 class AddContact extends Component {
   state = {
     name: '',
     email: '',
     phone: '',
+    nickname: '',
+    website: '',
     errors: {}
   };
 
-  onSubmit = (e) => {
+  onSubmit = e => {
     e.preventDefault();
 
-    const { name, email, phone } = this.state;
+    const { name, email, phone, website, nickname } = this.state;
 
     // Check For Errors
     if (name === '') {
@@ -33,16 +37,21 @@ class AddContact extends Component {
     const newContact = {
       name,
       email,
-      phone
+      phone,
+      website,
+      nickname
     };
 
     //// SUBMIT CONTACT ////
+    this.props.addContact(newContact);
 
     // Clear State
     this.setState({
       name: '',
       email: '',
       phone: '',
+      nickname: '',
+      website: '',
       errors: {}
     });
 
@@ -52,17 +61,17 @@ class AddContact extends Component {
   onChange = e => this.setState({ [e.target.name]: e.target.value });
 
   render() {
-    const { name, email, phone, errors } = this.state;
+    const { name, email, phone, errors, nickname, website } = this.state;
 
     return (
       <div className="card mb-3">
-        <div className="card-header">Add Contact</div>
+        <div className="card-header">Adicionar Contato</div>
         <div className="card-body">
           <form onSubmit={this.onSubmit}>
             <TextInputGroup
               label="Name"
               name="name"
-              placeholder="Enter Name"
+              placeholder="Inserir Nome"
               value={name}
               onChange={this.onChange}
               error={errors.name}
@@ -71,7 +80,7 @@ class AddContact extends Component {
               label="Email"
               name="email"
               type="email"
-              placeholder="Enter Email"
+              placeholder="Inserir Email"
               value={email}
               onChange={this.onChange}
               error={errors.email}
@@ -79,10 +88,26 @@ class AddContact extends Component {
             <TextInputGroup
               label="Phone"
               name="phone"
-              placeholder="Enter Phone"
+              placeholder="Inserir Fone"
               value={phone}
               onChange={this.onChange}
               error={errors.phone}
+            />{' '}
+            <TextInputGroup
+              label="Apelido"
+              name="nickname"
+              placeholder="Inserir Apelido"
+              value={nickname}
+              onChange={this.onChange}
+              error={errors.nickname}
+            />{' '}
+            <TextInputGroup
+              label="Site"
+              name="website"
+              placeholder="Inserir Site"
+              value={website}
+              onChange={this.onChange}
+              error={errors.website}
             />
             <input
               type="submit"
@@ -96,4 +121,7 @@ class AddContact extends Component {
   }
 }
 
-export default AddContact;
+export default connect(
+  null,
+  { addContact }
+)(AddContact);

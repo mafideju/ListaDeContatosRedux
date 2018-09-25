@@ -1,36 +1,19 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Contact from './Contact';
+import { getContacts } from '../../actions/contactActions';
 
 class Contacts extends Component {
-  state = {
-    contacts: [
-      {
-        id: 1,
-        name: 'John Doe',
-        email: 'john@gmail.com',
-        phone: '555-555-5555'
-      },
-      {
-        id: 2,
-        name: 'Karen Williams',
-        email: 'karen@gmail.com',
-        phone: '444-444-4444'
-      },
-      {
-        id: 3,
-        name: 'Henry Johnson',
-        email: 'henry@gmail.com',
-        phone: '333-333-333'
-      }
-    ]
-  };
+  componentDidMount() {
+    this.props.getContacts();
+  }
 
   render() {
-    const { contacts } = this.state;
+    const { contacts } = this.props;
     return (
       <React.Fragment>
         <h1 className="display-4 mb-2">
-          <span className="text-danger">Contact</span> List
+          <span className="text-secondary">Lista de Contatos</span>
         </h1>
         {contacts.map(contact => (
           <Contact key={contact.id} contact={contact} />
@@ -40,4 +23,11 @@ class Contacts extends Component {
   }
 }
 
-export default Contacts;
+const mapStateToProps = state => ({
+  contacts: state.contact.contacts
+});
+
+export default connect(
+  mapStateToProps,
+  { getContacts }
+)(Contacts);

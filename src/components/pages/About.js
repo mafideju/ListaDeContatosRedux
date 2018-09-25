@@ -3,8 +3,8 @@ import React from 'react';
 export default () => {
   return (
     <div>
-      <h1 className="display-4">About Contact Manager</h1>
-      <p className="lead">Simple app to manage contacts</p>
+      <h1 className="display-4">Sobre Lista de Contatos</h1>
+      <p className="lead">Aplicação para Gerenciar Contatos</p>
       <p className="text-secondary">Version 1.0.0</p>
     </div>
   );

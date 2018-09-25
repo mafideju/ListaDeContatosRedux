@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { deleteContact } from '../../actions/contactActions';
 
 class Contact extends Component {
   state = {
@@ -8,11 +10,11 @@ class Contact extends Component {
   };
 
   onDeleteClick = id => {
-    //// DELETE CONTACT ////
+    this.props.deleteContact(id);
   };
 
   render() {
-    const { id, name, email, phone } = this.props.contact;
+    const { id, name, email, phone, username, website } = this.props.contact;
     const { showContactInfo } = this.state;
 
     return (
@@ -48,7 +50,9 @@ class Contact extends Component {
         {showContactInfo ? (
           <ul className="list-group">
             <li className="list-group-item">Email: {email}</li>
-            <li className="list-group-item">Phone: {phone}</li>
+            <li className="list-group-item">Fone: {phone}</li>
+            <li className="list-group-item">Apelido: {username}</li>
+            <li className="list-group-item">Site: {website}</li>
           </ul>
         ) : null}
       </div>
@@ -60,4 +64,7 @@ Contact.propTypes = {
   contact: PropTypes.object.isRequired
 };
 
-export default Contact;
+export default connect(
+  null,
+  { deleteContact }
+)(Contact);

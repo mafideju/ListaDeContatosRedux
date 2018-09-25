@@ -1,50 +1,75 @@
 import React, { Component } from 'react';
 import TextInputGroup from '../layout/TextInputGroup';
+import { connect } from 'react-redux';
+import { getContact, updateContact } from '../../actions/contactActions';
 
 class EditContact extends Component {
   state = {
     name: '',
     email: '',
     phone: '',
+    website: '',
+    username: '',
     errors: {}
   };
 
-  onSubmit = (e) => {
+  componentWillReceiveProps(nextProps, nextState) {
+    const { name, email, phone, website, username } = nextProps.contact;
+    this.setState({
+      name,
+      email,
+      phone,
+      website,
+      username
+    });
+  }
+
+  componentDidMount() {
+    const { id } = this.props.match.params;
+    this.props.getContact(id);
+  }
+
+  onSubmit = e => {
     e.preventDefault();
 
-    const { name, email, phone } = this.state;
+    const { name, email, phone, website, username } = this.state;
 
     // Check For Errors
     if (name === '') {
-      this.setState({ errors: { name: 'Name is required' } });
+      this.setState({ errors: { name: 'Nome Obrigatório' } });
       return;
     }
 
     if (email === '') {
-      this.setState({ errors: { email: 'Email is required' } });
+      this.setState({ errors: { email: 'Email Requerido' } });
       return;
     }
 
     if (phone === '') {
-      this.setState({ errors: { phone: 'Phone is required' } });
+      this.setState({ errors: { phone: 'Fone Obrigatório' } });
       return;
     }
 
-    const updContact = {
-      name,
-      email,
-      phone
-    };
-
     const { id } = this.props.match.params;
 
-    //// UPDATE CONTACT ////
+    const updContact = {
+      id,
+      name,
+      email,
+      phone,
+      website,
+      username
+    };
 
+    //// UPDATE CONTACT ////
+    this.props.updateContact(updContact);
     // Clear State
     this.setState({
       name: '',
       email: '',
       phone: '',
+      website: '',
+      username: '',
       errors: {}
     });
 
@@ -54,17 +79,17 @@ class EditContact extends Component {
   onChange = e => this.setState({ [e.target.name]: e.target.value });
 
   render() {
-    const { name, email, phone, errors } = this.state;
+    const { name, email, phone, website, username, errors } = this.state;
 
     return (
       <div className="card mb-3">
-        <div className="card-header">Edit Contact</div>
+        <div className="card-header">Editar Contato</div>
         <div className="card-body">
           <form onSubmit={this.onSubmit}>
             <TextInputGroup
-              label="Name"
+              label="Nome"
               name="name"
-              placeholder="Enter Name"
+              placeholder="Insira Novo Nome"
               value={name}
               onChange={this.onChange}
               error={errors.name}
@@ -73,18 +98,34 @@ class EditContact extends Component {
               label="Email"
               name="email"
               type="email"
-              placeholder="Enter Email"
+              placeholder="Insira Novo Email"
               value={email}
               onChange={this.onChange}
               error={errors.email}
             />
             <TextInputGroup
-              label="Phone"
+              label="Fone"
               name="phone"
-              placeholder="Enter Phone"
+              placeholder="Insira Novo Fone"
               value={phone}
               onChange={this.onChange}
               error={errors.phone}
+            />
+            <TextInputGroup
+              label="Apelido"
+              name="username"
+              placeholder="Inserir Apelido"
+              value={username}
+              onChange={this.onChange}
+              error={errors.username}
+            />{' '}
+            <TextInputGroup
+              label="Site"
+              name="website"
+              placeholder="Inserir Site"
+              value={website}
+              onChange={this.onChange}
+              error={errors.website}
             />
             <input
               type="submit"
@@ -98,4 +139,11 @@ class EditContact extends Component {
   }
 }
 
-export default EditContact;
+const mapStateToProps = state => ({
+  contact: state.contact.contact
+});
+
+export default connect(
+  mapStateToProps,
+  { getContact, updateContact }
+)(EditContact);
